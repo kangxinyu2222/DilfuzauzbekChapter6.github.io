@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         
-        /* 核心修复：使用 100dvh 适配移动端视口，防止底部被遮挡 */
+        /* 核心修复：使用 100dvh 适配移动端视口 */
         html, body { 
             height: 100%;
             height: 100dvh; 
             width: 100%;
             overflow: hidden;
-            position: fixed; /* 锁定页面，防止整体橡皮筋效果 */
+            position: fixed; 
         }
 
         body { 
@@ -25,7 +25,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 底部安全区域适配 (iPhone X+) */
+        /* 底部安全区域适配 */
         .pb-safe {
             padding-bottom: env(safe-area-inset-bottom);
         }
@@ -109,12 +109,12 @@
     <!-- Main Content -->
     <main class="flex-1 relative w-full overflow-hidden">
         
-        <!-- VIEW 1: FLASHCARDS (With Audio) -->
-        <div id="view-flashcards" class="w-full h-full flex flex-col items-center justify-start pt-4 pb-4 px-4 overflow-y-auto no-scrollbar">
+        <!-- VIEW 1: FLASHCARDS (Optimized Layout + Touch) -->
+        <div id="view-flashcards" class="w-full h-full flex flex-col pt-2 pb-2 px-4">
             
             <!-- Category Filter -->
-            <div class="w-full overflow-x-auto no-scrollbar mb-4 shrink-0">
-                <div class="flex space-x-2 px-1">
+            <div class="w-full overflow-x-auto no-scrollbar mb-2 shrink-0">
+                <div class="flex space-x-2 px-1 py-1">
                     <button onclick="filterCards('all')" class="cat-btn bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm">All</button>
                     <button onclick="filterCards('verb')" class="cat-btn bg-white text-gray-600 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border">动词 Verbs</button>
                     <button onclick="filterCards('noun')" class="cat-btn bg-white text-gray-600 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border">名词 Nouns</button>
@@ -122,36 +122,44 @@
                 </div>
             </div>
 
-            <!-- Card -->
-            <div class="w-full max-w-sm aspect-[4/5] perspective relative mb-6 shrink-0">
-                <div class="card-inner bg-white" id="flashcard" onclick="flipCard()">
-                    <!-- Front -->
-                    <div class="card-face card-front border border-gray-100">
-                        <div class="absolute top-4 right-4 text-xs font-bold text-gray-300 bg-gray-50 px-2 py-1 rounded" id="card-cat">VERB</div>
-                        <div class="text-blue-500 w-24 h-24 mb-6" id="card-icon"></div>
-                        <h2 class="text-4xl font-bold text-gray-800 mb-2 text-center px-2" id="card-uzbek">...</h2>
-                        <p class="text-gray-400 text-xs mt-4 animate-pulse">点击翻转 / Tap to flip</p>
-                    </div>
-                    <!-- Back -->
-                    <div class="card-face card-back bg-gradient-to-br from-blue-500 to-blue-600">
-                        <h3 class="text-2xl font-bold mb-1" id="card-chinese">...</h3>
-                        <div class="w-8 h-0.5 bg-white/30 my-2 rounded"></div>
-                        <h3 class="text-xl font-semibold text-blue-100 italic mb-6" id="card-english">...</h3>
-                        <div class="absolute bottom-6 opacity-50 w-8 h-8" id="card-icon-sm"></div>
+            <!-- Card Container: Flexible height to fit screen -->
+            <div class="flex-1 flex items-center justify-center min-h-0 w-full mb-4 relative" id="card-touch-area">
+                <div class="w-full max-w-sm h-full max-h-[60vh] perspective relative">
+                    <div class="card-inner bg-white" id="flashcard" onclick="flipCard()">
+                        <!-- Front -->
+                        <div class="card-face card-front border border-gray-100">
+                            <div class="absolute top-4 right-4 text-xs font-bold text-gray-300 bg-gray-50 px-2 py-1 rounded" id="card-cat">VERB</div>
+                            <div class="text-blue-500 w-20 h-20 mb-4" id="card-icon"></div>
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center px-2" id="card-uzbek">...</h2>
+                            <p class="text-gray-400 text-xs mt-2 animate-pulse">左右滑动切换 / 点击翻转</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="card-face card-back bg-gradient-to-br from-blue-500 to-blue-600">
+                            <h3 class="text-2xl font-bold mb-1" id="card-chinese">...</h3>
+                            <div class="w-8 h-0.5 bg-white/30 my-2 rounded"></div>
+                            <h3 class="text-lg font-semibold text-blue-100 italic mb-4" id="card-english">...</h3>
+                            <div class="absolute bottom-6 opacity-50 w-8 h-8" id="card-icon-sm"></div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Swipe Hints (Optional visual cues) -->
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 text-gray-300 opacity-20 pointer-events-none text-4xl">&lsaquo;</div>
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-300 opacity-20 pointer-events-none text-4xl">&rsaquo;</div>
             </div>
 
-            <!-- Controls -->
-            <div class="flex items-center justify-between w-full max-w-sm px-2 shrink-0 pb-20">
-                <button onclick="prevCard()" class="p-4 rounded-full bg-white shadow text-gray-500 active:bg-gray-100">
+            <!-- Controls: Fixed height at bottom -->
+            <div class="flex items-center justify-between w-full max-w-sm px-2 shrink-0 pb-2 mx-auto h-20">
+                <button onclick="prevCard()" class="p-4 rounded-full bg-white shadow text-gray-500 active:bg-gray-100 touch-manipulation">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <div class="text-xs font-mono text-gray-400" id="card-counter">1/100</div>
-                <button onclick="speakWord()" class="p-5 rounded-full bg-blue-600 shadow-lg shadow-blue-200 text-white active:scale-95 transition transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-                </button>
-                <button onclick="nextCard()" class="p-4 rounded-full bg-white shadow text-gray-500 active:bg-gray-100">
+                <div class="flex flex-col items-center justify-center">
+                    <button onclick="speakWord()" class="p-5 rounded-full bg-blue-600 shadow-lg shadow-blue-200 text-white active:scale-95 transition transform touch-manipulation mb-1">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    </button>
+                    <div class="text-xs font-mono text-gray-400" id="card-counter">1/100</div>
+                </div>
+                <button onclick="nextCard()" class="p-4 rounded-full bg-white shadow text-gray-500 active:bg-gray-100 touch-manipulation">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -185,7 +193,6 @@
                 <div class="text-center mb-6 mt-2">
                     <div id="quiz-icon" class="w-16 h-16 text-blue-500 mx-auto mb-3"></div>
                     <h2 class="text-2xl font-bold text-gray-800 leading-tight" id="quiz-question">...</h2>
-                    <!-- Audio button removed here as requested -->
                 </div>
 
                 <div id="quiz-options" class="flex flex-col gap-2.5">
@@ -216,7 +223,6 @@
 
     <script>
         // --- AUDIO SYSTEM (SFX ONLY) ---
-        // TTS logic is separate and only for flashcards
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(type) {
@@ -229,7 +235,6 @@
             const now = audioCtx.currentTime;
 
             if (type === 'correct') {
-                // "Ding" sound
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(800, now);
                 osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
@@ -238,7 +243,6 @@
                 osc.start(now);
                 osc.stop(now + 0.6);
             } else {
-                // "Buzz" sound
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, now);
                 osc.frequency.linearRampToValueAtTime(100, now + 0.3);
@@ -252,17 +256,14 @@
         // --- TTS Logic (Only used in Flashcards) ---
         function speakWord(text) {
             const word = text || cardList[cardIndex].u;
-            
-            // Try Google Translate TTS first
             const onlineUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=uz&client=tw-ob&q=${encodeURIComponent(word)}`;
             const audio = new Audio(onlineUrl);
             
             audio.play().catch(e => {
-                // Fallback to System TTS
                 if ('speechSynthesis' in window) {
                     const u = new SpeechSynthesisUtterance(word);
                     const voices = window.speechSynthesis.getVoices();
-                    const tr = voices.find(v => v.lang.includes('tr')); // Turkish is close to Uzbek
+                    const tr = voices.find(v => v.lang.includes('tr'));
                     if(tr) u.voice = tr;
                     u.rate = 0.85;
                     window.speechSynthesis.speak(u);
@@ -426,11 +427,50 @@
         let firstSelection = null;
         let gameScore = 0;
         let matchedPairs = 0;
-        let isGameProcessing = false; // Flag to prevent multi-click
+        let isGameProcessing = false;
 
         let quizList = [];
         let quizIndex = 0;
         let currentQuizItem = null;
+
+        // --- SWIPE HANDLER ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function initSwipe() {
+            const cardTouchArea = document.getElementById('card-touch-area');
+            if(!cardTouchArea) return;
+
+            cardTouchArea.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            cardTouchArea.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, {passive: true});
+        }
+
+        function handleSwipe() {
+            const threshold = 50; // min swipe distance
+            if (touchEndX < touchStartX - threshold) {
+                // Swipe Left -> Next
+                nextCard();
+            }
+            if (touchEndX > touchStartX + threshold) {
+                // Swipe Right -> Prev
+                prevCard();
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            cardList = shuffleArray([...vocabulary]); 
+            renderCard();
+            initGame();
+            initQuiz();
+            initSwipe(); // Start swipe listener
+        };
 
         // --- UTILS ---
         function shuffleArray(array) {
@@ -440,14 +480,6 @@
             }
             return array;
         }
-
-        // --- INITIALIZATION ---
-        window.onload = () => {
-            cardList = shuffleArray([...vocabulary]); 
-            renderCard();
-            initGame();
-            initQuiz();
-        };
 
         function switchView(viewId) {
             // Hide all
@@ -579,27 +611,23 @@
         }
 
         function handleGameClick(el, card) {
-            if (isGameProcessing) return; // Prevent clicks during shake/timeout
+            if (isGameProcessing) return; 
             if (el.classList.contains('matched') || el.classList.contains('selected')) return;
             
-            // NO AUDIO for Game
-
             el.classList.add('selected');
 
             if (!firstSelection) {
                 firstSelection = { el, card };
             } else {
-                // Check match
-                isGameProcessing = true; // Lock
+                isGameProcessing = true;
                 if (firstSelection.card.id === card.id && firstSelection.card.type !== card.type) {
-                    // Match
                     setTimeout(() => {
                         el.classList.remove('selected');
                         firstSelection.el.classList.remove('selected');
                         el.classList.add('matched');
                         firstSelection.el.classList.add('matched');
                         firstSelection = null;
-                        isGameProcessing = false; // Unlock
+                        isGameProcessing = false;
                     }, 200);
                     gameScore += 10;
                     matchedPairs++;
@@ -609,14 +637,13 @@
                         }, 500);
                     }
                 } else {
-                    // Mismatch
                     el.classList.add('wrong');
                     firstSelection.el.classList.add('wrong');
                     setTimeout(() => {
                         el.classList.remove('selected', 'wrong');
                         firstSelection.el.classList.remove('selected', 'wrong');
                         firstSelection = null;
-                        isGameProcessing = false; // Unlock
+                        isGameProcessing = false;
                     }, 600);
                     gameScore = Math.max(0, gameScore - 2);
                 }
@@ -652,8 +679,6 @@
             container.innerHTML = '';
             document.getElementById('quiz-feedback').classList.add('hidden');
 
-            // NO AUTO SPEAK for Quiz
-
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-3 px-4 rounded-xl text-left font-semibold transition active:scale-98';
@@ -677,7 +702,6 @@
                 feedback.className = "mt-4 text-center font-bold text-sm text-green-600 bg-green-50 p-2 rounded";
                 playSound('correct'); 
                 
-                // Correct: 1 second delay
                 setTimeout(() => {
                     nextQuiz();
                 }, 1000);
@@ -689,14 +713,12 @@
                 feedback.className = "mt-4 text-center font-bold text-sm text-red-600 bg-red-50 p-2 rounded";
                 playSound('wrong'); 
                 
-                // Highlight correct one
                 for(let b of btns) {
                     if (b.innerHTML.includes(currentQuizItem.c)) {
                         b.classList.add('bg-green-100', 'border-green-500');
                     }
                 }
 
-                // Wrong: 1.5 second delay
                 setTimeout(() => {
                     nextQuiz();
                 }, 1500);
